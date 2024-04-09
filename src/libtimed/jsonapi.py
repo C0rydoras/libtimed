@@ -15,10 +15,13 @@ class Record(BaseRecord):
     relationships: dict[str, BaseRecord] | None
 
 
+T = t.TypeVar("T", list[Record], Record)
+
+
 class Data(t.TypedDict):
     """JSON:API Response."""
 
-    data: list[Record] | Record
+    data: T
     included: list[Record] | None
 
 
@@ -75,7 +78,9 @@ def deserialize_record(record: Record, included: list[Record]):
     return obj
 
 
-def deserialize(data: Data) -> dict | list[dict]:
+@t.overload
+def deserialize(data: Data[Record]) -> dict: ...
+def deserialize(data: Data[list[Record]]) -> list[dict]:
     """Deserialize JSON:API Response into human readable value."""
     if not data.get("data"):
         raise MissingKeyError("data")
