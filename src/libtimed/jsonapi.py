@@ -80,7 +80,7 @@ def deserialize(data: Data) -> dict | list[dict]:
     if not data.get("data"):
         raise MissingKeyError("data")
 
-    included = data.get("included")
+    included = data.get("included", [])
 
     if isinstance(data.get("data"), list):
         return [deserialize_record(record, included) for record in data["data"]]
