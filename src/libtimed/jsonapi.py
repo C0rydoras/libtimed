@@ -27,18 +27,23 @@ class DeserializationError(Exception):
 
 
 class MissingKeyError(DeserializationError):
+    """Raised when theres a missing key when deserializing."""
+
     def __init__(self, key: str, *args):
         message = f"Missing required key: {key}"
         super().__init__(message, *args)
 
 
 class ForbiddenKeyError(DeserializationError):
+    """Raised when theres a forbidden key when deserializing."""
+
     def __init__(self, key: str, *args):
         message = f"Forbidden key used: {key}"
         super().__init__(message, *args)
 
 
 def deserialize_record(record: Record, included: list[Record]):
+    """Deserialize single record into human readable value."""
     attributes = record.get("attributes", {})
     relationships = record.get("relationships", {})
 
@@ -70,7 +75,8 @@ def deserialize_record(record: Record, included: list[Record]):
     return obj
 
 
-def deserialize(data: Data):
+def deserialize(data: Data) -> dict | list[dict]:
+    """Deserialize JSON:API Response into human readable value."""
     if not data.get("data"):
         raise MissingKeyError("data")
 
